@@ -31,6 +31,15 @@ def play_game
 end
 
 def play_round(board)
+  board.guess(user_guess)
+  board.check_guess
+
+  board.show_lives
+  board.show_board
+  board.show_wrong_guesses
+end
+
+def user_guess
   puts
   puts 'Type your guess: '
   guess = gets.chomp.downcase
@@ -41,12 +50,7 @@ def play_round(board)
     guess = gets.chomp.downcase
   end
 
-  board.guess(guess)
-  board.check_guess
-
-  board.show_lives
-  board.show_board
-  board.show_wrong_guesses
+  guess
 end
 
 play_game
