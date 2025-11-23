@@ -100,4 +100,8 @@ class Board
     game
   end
 
+  def valid?(guess)
+    true unless @board.include?(guess)
+    true unless @wrong_guesses.include?(guess)
+  end
 end

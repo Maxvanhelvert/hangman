@@ -31,7 +31,8 @@ def play_game
 end
 
 def play_round(board)
-  board.guess(user_guess)
+  guess = user_guess(board)
+  board.guess(guess)
   board.check_guess
 
   board.show_lives
@@ -39,13 +40,17 @@ def play_round(board)
   board.show_wrong_guesses
 end
 
-def user_guess
+def user_guess(board)
   puts
   puts 'Type your guess: '
   guess = gets.chomp.downcase
   puts
+  
+  valid?(guess, board)
+end
 
-  while !guess.match?(/\A[a-z]\Z/)
+def valid?(guess, board)
+  while !guess.match?(/\A[a-z]\Z/) || !board.valid?(guess)
     puts "Try again: "
     guess = gets.chomp.downcase
   end
@@ -53,4 +58,15 @@ def user_guess
   guess
 end
 
-play_game
+def start
+  loop do 
+    puts 'Play new game? (y/n)'
+    input = gets.chomp.downcase
+
+    break if input == 'n'
+
+    play_game if input == 'y'
+  end
+end
+
+start
