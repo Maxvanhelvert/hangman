@@ -1,0 +1,28 @@
+--- !ruby/object:Board
+answer: fioricet
+board:
+- "-"
+- i
+- o
+- "-"
+- i
+- "-"
+- e
+- t
+life_num: 7
+lives:
+- "●"
+- "●"
+- "●"
+- "●"
+- "●"
+- "●"
+- "●"
+- X
+- X
+- X
+wrong_guesses:
+- a
+- l
+- "n"
+guess: i

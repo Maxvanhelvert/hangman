@@ -7,26 +7,25 @@
 # if all guesses used and word not guessed, finish game.
 require './dictionary'
 require './board'
+require 'yaml'
 
-def play_game
-  dictionary = Dictionary.new
-  word = dictionary.get_word
-  current_board = Board.new(word)
+def play_game(board)
 
-  current_board.show_lives
-  current_board.show_board
-  current_board.show_wrong_guesses
+  board.show_lives
+  board.show_board
+  board.show_wrong_guesses
 
-  while !current_board.finished?
-    play_round(current_board)
+  while !board.finished?
+    result = play_round(board)
+    return if result == :save
   end
 
-  result = current_board.finished?
+  result = board.finished?
   puts
   puts 'Game Finished'
   puts "You #{result}"
   puts
-  puts "The word was #{word}"
+  puts "The word was #{board.answer}"
 
 end
 
@@ -42,10 +41,16 @@ end
 
 def user_guess(board)
   puts
-  puts 'Type your guess: '
+  puts 'Type your guess: (or "save")'
   guess = gets.chomp.downcase
   puts
   
+  if guess == 'save'
+    File.write('save.yaml', YAML.dump(board))
+    puts 'Game saved!'
+    return :save
+  end
+
   valid?(guess, board)
 end
 
@@ -58,14 +63,36 @@ def valid?(guess, board)
   guess
 end
 
+def new_game
+dictionary = Dictionary.new
+word = dictionary.get_word
+board = Board.new(word)
+board
+end
+
 def start
   loop do 
     puts 'Play new game? (y/n)'
     input = gets.chomp.downcase
 
-    break if input == 'n'
+    if input == 'n'
+      puts
+      puts "load game? (y/n)"
+      input = gets.chomp.downcase
 
-    play_game if input == 'y'
+      if input == 'y'
+        input = ' '
+        board = YAML.safe_load_file(
+          'save.yaml',
+          permitted_classes: [Board]
+          )
+        play_game(board)
+      else 
+        break
+      end
+    end
+
+    play_game(new_game) if input == 'y'
   end
 end
 
